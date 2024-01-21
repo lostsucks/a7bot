@@ -1,10 +1,12 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
+const { giveawayData } = require('./giveawaystorage'); // Adjust the path accordingly
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('listgiveaways')
-        .setDescription('Lists all active giveaway IDs.'),
+        .setName('giveawaylist')
+        .setDescription('Lists all active giveaway IDs.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction) {
         // Fetch the active giveaway IDs
         const activeGiveaways = Object.entries(giveawayData)
