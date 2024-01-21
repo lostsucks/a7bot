@@ -3,7 +3,7 @@ const { EmbedBuilder } = require('@discordjs/builders');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('gsetcolor')
+        .setName('giveawaysetcolor')
         .setDescription('Set the color of a giveaway embed.')
         .addIntegerOption(option => option.setName('giveawayid').setDescription('The ID of the giveaway').setRequired(true))
         .addStringOption(option => option.setName('color').setDescription('The color to set the embed to').setRequired(true)),
