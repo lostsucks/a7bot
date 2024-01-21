@@ -5,7 +5,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
 
-<h3 align="center">a7bot</h3>
+<h3 align="center">-=- A7BOT -=-</h3>
 
   <p align="center">
     A new bot with tons of features, made specifically for the A7Box server and it's staff!
@@ -43,8 +43,6 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://discord.gg/a7box)
 
 This project is not supposed to be copied and is supposed to be used to report bugs, help fix my shitty code, and more!
 
