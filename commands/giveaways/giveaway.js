@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const { EmbedBuilder } = require('@discordjs/builders');
 const ms = require('ms');
-
-let giveaways = [];
-let giveawayData = {};
+const { giveaways, giveawayData } = require('./giveawaystorage');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,17 +19,15 @@ module.exports = {
         const durationMinutes = interaction.options.getString('time');
         const description = interaction.options.getString('description') || '';
 
-        // Unique giveaway ID
-        const giveawayId = Date.now(); // Using the current timestamp as a simple unique ID
+        const giveawayId = Date.now();
         giveaways.push(giveawayId);
         giveawayData[giveawayId] = { host: interaction.user.id, entries: new Set(), prize, winners: [], color: 0xFFFF38 };
 
-        // Parsing time
         const duration = ms(interaction.options.getString('time'));
         if (!duration) {
             return interaction.reply({ content: 'Invalid time format provided.', ephemeral: true });
         }
-        
+
         const endTime = new Date(Date.now() + duration);
         const endTimestamp = Math.floor(endTime.getTime() / 1000);
 
@@ -68,28 +64,42 @@ module.exports = {
         });
 
         collector.on('end', async () => {
+            console.log("Collector ended, selecting winners...");
+        
             let winnerIds = Array.from(entries);
             let winners = [];
-
-            // Randomly select winners
+        
             for (let i = 0; i < Math.min(numberOfWinners, winnerIds.length); i++) {
                 let winnerIndex = Math.floor(Math.random() * winnerIds.length);
                 winners.push(`<@${winnerIds[winnerIndex]}>`);
-                winnerIds.splice(winnerIndex, 1); // Remove the winner to avoid duplicates
+                winnerIds.splice(winnerIndex, 1);
             }
-
-            // Create the Giveaway Summary button
+        
             const summaryButton = new ButtonBuilder()
                 .setLabel('Giveaway Summary')
                 .setStyle(ButtonStyle.Link)
-                .setURL('https://youtube.com'); // Replace with your actual URL
-
+                .setURL('https://youtube.com');
+        
             const summaryRow = new ActionRowBuilder().addComponents(summaryButton);
-
+        
             giveawayEmbed.setDescription(`${description}\n\nEnded: <t:${endTimestamp}:F>\n${hostedBy}\nEntries: **${entries.size}**\nWinners: ${winners.join(', ')}`);
-            await interaction.editReply({ embeds: [giveawayEmbed], components: [summaryRow] }); // Update the original message with the summary button
-
-            await interaction.followUp({ content: `Congratulations ${winners.join(', ')}! You won **${prize}**!`});
+            giveawayData[giveawayId].winners = winners;
+        
+            try {
+                const message = await interaction.fetchReply();
+                console.log("Fetched reply message:", message);
+        
+                if (message) {
+                    await message.edit({ embeds: [giveawayEmbed], components: [summaryRow] });
+                } else {
+                    console.log("Failed to fetch the original message.");
+                }
+        
+                await interaction.followUp({ content: `The giveaway has ended. Congratulations to the winners: ${winners.join(', ')}! You won **${prize}**!`});
+            } catch (error) {
+                console.error("Error in collector 'end' event:", error);
+            }
         });
+        
     },
 }
