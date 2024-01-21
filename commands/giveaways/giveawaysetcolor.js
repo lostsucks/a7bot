@@ -6,7 +6,9 @@ module.exports = {
         .setName('giveawaysetcolor')
         .setDescription('Set the color of a giveaway embed.')
         .addIntegerOption(option => option.setName('giveawayid').setDescription('The ID of the giveaway').setRequired(true))
-        .addStringOption(option => option.setName('color').setDescription('The color to set the embed to').setRequired(true)),
+        .addStringOption(option => option.setName('color').setDescription('The color to set the embed to').setRequired(true))
+        .setDMPermissions(false)
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction) {
         const giveawayId = interaction.options.getInteger('giveawayid');
         const color = interaction.options.getString('color');
