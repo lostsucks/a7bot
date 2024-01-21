@@ -1,5 +1,9 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const { EmbedBuilder } = require('@discordjs/builders');
+const ms = require('ms');
+
+let giveaways = [];
+let giveawayData = {};
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,18 +11,28 @@ module.exports = {
         .setDescription('Create a giveaway!')
         .addStringOption(option => option.setName('prize').setDescription('The prize for the giveaway').setRequired(true))
         .addIntegerOption(option => option.setName('winners').setDescription('The amount of winners for the giveaway').setRequired(true))
-        .addIntegerOption(option => option.setName('time').setDescription('The time for the giveaway (In Minutes)').setRequired(true))
+        .addStringOption(option => option.setName('time').setDescription('The time for the giveaway (e.g., 1s, 1m, 1h, 1d)').setRequired(true))
         .addStringOption(option => option.setName('description').setDescription('The description for the giveaway').setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
         .setDMPermission(false),
     async execute(interaction) {
         const prize = interaction.options.getString('prize');
         const numberOfWinners = interaction.options.getInteger('winners');
-        const durationMinutes = interaction.options.getInteger('time');
+        const durationMinutes = interaction.options.getString('time');
         const description = interaction.options.getString('description') || '';
 
-        const endTime = new Date();
-        endTime.setMinutes(endTime.getMinutes() + durationMinutes);
+        // Unique giveaway ID
+        const giveawayId = Date.now(); // Using the current timestamp as a simple unique ID
+        giveaways.push(giveawayId);
+        giveawayData[giveawayId] = { host: interaction.user.id, entries: new Set(), prize, winners: [], color: 0xFFFF38 };
+
+        // Parsing time
+        const duration = ms(interaction.options.getString('time'));
+        if (!duration) {
+            return interaction.reply({ content: 'Invalid time format provided.', ephemeral: true });
+        }
+        
+        const endTime = new Date(Date.now() + duration);
         const endTimestamp = Math.floor(endTime.getTime() / 1000);
 
         let entries = new Set();
