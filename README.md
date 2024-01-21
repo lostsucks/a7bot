@@ -48,12 +48,6 @@ This project is not supposed to be copied and is supposed to be used to report b
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Built With
-
-* [![Node][Node.js]][Node-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- ROADMAP -->
 ## Roadmap
 
@@ -67,7 +61,7 @@ See the [open issues](https://github.com/lostsucks/a7bot/issues) for a full list
 <!-- CONTACT -->
 ## Contact
 
-lostsucks | Twitter/Discord - [@lostsucks](https://twitter.com/lostsucks) - [@lostsucks]lostsucks
+lostsucks | Twitter/Discord - [@lostsucks](https://twitter.com/lostsucks) - lostsucks on discord
 
 Project Link: [https://github.com/lostsucks/a7bot](https://github.com/lostsucks/a7bot)
 
